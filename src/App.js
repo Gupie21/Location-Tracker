@@ -64,6 +64,23 @@ function LocationTracker() {
     navigator.geolocation.getCurrentPosition(saveLocation);
   }, []);
 
+  // Función para obtener la dirección a partir de las coordenadas geográficas usando Nominatim
+  const getAddress = (latitude, longitude) => {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const address = `${data.display_name}`;
+        console.log("Dirección:", address);
+        return address;
+      })
+      .catch((error) => {
+        console.error("Error al obtener la dirección:", error);
+        return null;
+      });
+  };
+
   return (
     <div>
       <h1>Location Tracker</h1>
@@ -72,6 +89,8 @@ function LocationTracker() {
         {locations.map((location, index) => (
           <li key={index}>
             Latitude: {location.latitude}, Longitude: {location.longitude}
+            <br />
+            Dirección: {getAddress(location.latitude, location.longitude)}
           </li>
         ))}
       </ul>
